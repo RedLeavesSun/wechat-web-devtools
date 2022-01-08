@@ -1,0 +1,7 @@
+{
+  "version": "0.10.25",
+  "name": "inspector",
+  "main": "./index.html",
+  "permission": {},
+  "manifest_version": "0.0.1"
+}

@@ -1,0 +1,402 @@
+<!DOCTYPE html><html lang=zh-CN><head><meta charset=utf-8><link rel=stylesheet href=../static/app.css><link rel="shortcut icon" href=../static/image/logo@2x.png><style type=text/css>#webview-container{width:100%;height:90%}.webview{width:100%;height:100%}.ui-dialog-ft{background:linear-gradient(180deg,transparent,#f7f7f7 13.75%,#f7f7f7)}body.dark .ui-dialog-ft{background:linear-gradient(180deg,transparent,#2e2e2e 13.75%,#2e2e2e)}.--no-drag{-webkit-app-region:no-drag}.--cursor-pointer{cursor:pointer}#custom-frame{background-color:var(--global-top-background-color);position:relative;text-align:center}#custom-frame .ui-icon-circle{width:12px;height:12px}#custom-frame .title-bar-ext.is-mac{display:flex;position:absolute;margin-top:3px}#custom-frame .title-bar-ext.is-win{display:flex;position:absolute;right:5px;margin-top:3px}#custom-frame.whatsnew .custom-frame-close.ui-title-bar-close{display:inline-block;-webkit-app-region:no-drag;box-sizing:border-box;width:12px;height:12px;border-radius:50%;margin-top:1px;margin-left:4px;margin-right:4px;line-height:0;background-color:#ff6159;border:1px solid #ff6159;position:absolute;left:6px;top:6px}#custom-frame.whatsnew .custom-frame-close.ui-icon-close{position:absolute;right:6px;top:6px}.ui-dialog-ft .uiv2-checkbox-text{font-size:13px}</style></head><body><div id=webview-container></div><div class=ui-dialog-ft style=box-shadow:none;position:relative;top:-94px;padding-top:78px><div class=ui-dialog-action style=padding-top:4px><label class=uiv2-checkbox id=checkbox_auto-update__label><i class=uiv2-checkbox-icon id=checkbox_auto-update__icon></i> <span class=uiv2-checkbox-text>自动更新最新版本</span></label><!-- <input type="checkbox" id="checkbox_auto-update" class="ui-checkbox-we-theme"/>
+      <label id="checkbox_auto-update__label"
+        style="font-size: 12px; line-height: 16px; vertical-align: top;margin-left:8px"> 自动更新最新版本</label> --></div><div class=ui-dialog-action style=white-space:nowrap><button class="ui-button ui-button-default" id=btn_ignore style=width:74px;box-shadow:none>忽略此版本</button> <button class="ui-button ui-button-default" id=btn_wait style=width:74px;margin-left:8px;box-shadow:none>稍后更新</button> <button class="ui-button ui-button-primary" id=btn_confirm style=width:74px;margin-left:8px;background-color:#00c777;box-shadow:none>立即更新</button></div></div></body><script type=text/javascript>const isMac = process.platform === 'darwin'
+  let theme = global.shareData.updateConfig.theme
+  if (theme === 'dark') {
+    document.body.classList.add('dark')
+  }
+
+  function handleCheckBoxStatus (check) {
+    const icon = document.getElementById('checkbox_auto-update__icon')
+    if (check) {
+      icon.classList.remove('uiv2-checkbox-icon')
+      icon.classList.add('uiv2-checkbox-icon-o')
+    } else {
+      icon.classList.remove('uiv2-checkbox-icon-o')
+      icon.classList.add('uiv2-checkbox-icon')
+    }
+  }
+  // const checkBox = document.getElementById("checkbox_auto-update");
+  const checkBoxLabel = document.getElementById("checkbox_auto-update__label");
+  let checked = !!global.shareData.updateConfig.autoUpdate
+  handleCheckBoxStatus(checked)
+  checkBoxLabel.addEventListener("click", () => {
+    checked = !checked
+    handleCheckBoxStatus(checked)
+    if (global.shareData.updateConfig) {
+      global.shareData.updateConfig.autoUpdate = checked
+    }
+  })
+  var btn = document.getElementById('btn_confirm')
+  btn.addEventListener('click', () => {
+    if (global.shareData.updateConfig) {
+      global.shareData.updateConfig.confirmInstall = true
+    }
+    const win = global.windowMap.get('WHATSNEW')
+    win.close()
+  })
+
+  const ignoreBtn = document.getElementById('btn_ignore')
+  if (ignoreBtn) {
+    ignoreBtn.addEventListener('click', () => {
+      if (global.shareData.updateConfig) {
+        global.shareData.updateConfig.ignore = true
+      }
+      const win = global.windowMap.get('WHATSNEW')
+      win.close()
+    })
+  }
+
+  const waitBtn = document.getElementById('btn_wait')
+  if(waitBtn){
+    waitBtn.addEventListener('click',()=>{
+      if (global.shareData.updateConfig) {
+        global.shareData.updateConfig.wait = true
+      }
+      const win = global.windowMap.get('WHATSNEW')
+      win.close()
+    })
+  }
+
+  const getNightlyStyle = () => {
+    return `
+      header.navbar.navbar_with-link {
+        display: none;
+      }
+      body .mobile-search-btn {
+        display: none!important;
+      }
+      body .mobile-links__wrp {
+        display: none!important;
+      }
+      .subnavbar {
+        display: none;
+      }
+      body .main-container {
+        margin-top: 0!important;
+      }
+      body .sidebar__wrp {
+        display: none;
+      }
+      body .Breadcrumb {
+        display: none;
+      }
+      html.dark .main-contontaier__bd {
+        background: #3a3a3a;
+      }
+      html.dark #docContent h2 {
+        color: #fff;
+      }
+      html #docContent blockquote {
+        border-left: 4px solid #00c777;
+      }
+
+      html.dark #docContent h3 {
+        color: hsla(0,0%,100%,.5);
+      }
+
+      html.dark #docContent li {
+        color: hsl(0,0%,100%) !important;
+      }
+
+      html.dark #docContent .content code {
+        background-color: #454545;
+      }
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #c3c3c3;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+      }
+      html.dark ::-webkit-scrollbar-thumb {
+        background-color: #454545;
+      }
+      html.dark ::-webkit-scrollbar-track {
+        background-color: #3a3a3a;
+      }
+      html.dark ::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+      }
+      html.dark body {
+        background-color: #3a3a3a;
+      }
+      h3[id*="macOS"] {
+        display: none;
+      }
+      #app .page-inner {
+        padding: 40px 30px!important;
+      }
+    `
+  }
+
+  const getStableOrRCStyle = () => {
+    return `
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+        background-color: #c3c3c3;
+      }
+      ::-webkit-scrollbar {
+        width: 3px;
+        height: 3px;
+      }
+      html.dark ::-webkit-scrollbar-thumb {
+        background-color: #454545;
+      }
+      html.dark ::-webkit-scrollbar-track {
+        background-color: #3a3a3a;
+      }
+      html.dark ::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+      }
+      #header {
+        display: none;
+      }
+      body #body {
+        margin-top: 0;
+      }
+      #app.app_container.app .detail__breadcruumb {
+        display: none;
+      }
+      #app.app_container.app .behavior_container.for_mobile {
+        display: none;
+      }
+      #app.app_container.app .anwser__area {
+        display: none;
+      }
+      #app .mode__single-breadcrumb detail__breadcruumb for_mobile mode__single-breadcrumb__normal {
+        display: none;
+      }
+      #footer {
+        display: none;
+      }
+      #blog-footer-opr {
+        display: none;
+      }
+      html.dark #articleApp {
+        border-radius: 0;
+        background: #292929;
+      }
+      html.dark .post_title_content {
+        color: hsl(0,0%,100%);
+      }
+      html.dark .post_info {
+        color: hsla(0,0%,100%,.5);
+      }
+      html.dark .markdown_article_detail .ask_content h1, 
+      html.dark .markdown_article_detail .ask_content h1 span,
+      html.dark .markdown_article_detail .ask_content h1 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content h2, 
+      html.dark .markdown_article_detail .ask_content h2 span,
+      html.dark .markdown_article_detail .ask_content h2 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content h3, 
+      html.dark .markdown_article_detail .ask_content h3 span,
+      html.dark .markdown_article_detail .ask_content h3 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content h4, 
+      html.dark .markdown_article_detail .ask_content h4 span,
+      html.dark .markdown_article_detail .ask_content h4 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content h5, 
+      html.dark .markdown_article_detail .ask_content h5 span,
+      html.dark .markdown_article_detail .ask_content h5 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content h6, 
+      html.dark .markdown_article_detail .ask_content h6 span,
+      html.dark .markdown_article_detail .ask_content h6 strong {
+        color: hsla(0,0%,100%,.5) !important;
+      }
+      html.dark .markdown_article_detail .ask_content p span {
+        color: hsl(0,0%,100%) !important;
+      }
+      html.dark .markdown_article_detail .ask_content li {
+        color: hsl(0,0%,100%) !important;
+      }
+      html.dark body.markdown_article_detail_body {
+        background: #292929;
+      }
+      body.markdown_article_detail_body {
+        padding-bottom: 0;
+      }
+      .post_extra_info.detail_footer {
+        display: none;
+      }
+      body #body.page_detail {
+        margin-top: 0;
+      }
+      body #articleApp {
+        padding: 40px 30px!important;
+      }
+    `
+  }
+
+
+  const href = global.shareData.updateConfig.whatsnewURL || '';
+  const isDoc = href.endsWith('.html') && href.includes('miniprogram/dev/devtools')
+  const container = document.getElementById("webview-container");
+  const wv = document.createElement("webview");
+  const style = isDoc ? getNightlyStyle() : getStableOrRCStyle()
+  const loadCommitB = () => {
+    wv.removeEventListener('loadcommit', loadCommitB);
+    let code = ';'
+    if (theme === 'dark') {
+      code += `
+        var html = document.querySelector('html')
+        html.classList.add('dark')
+      `
+    }
+    console.log(wv.src, 'hohoho',wv)
+    console.log(code)
+    wv.insertCSS({
+      code: style
+    }, () => {
+      wv.style.opacity = 1;
+    })
+  }
+  const loadCommit = () => {
+    console.log("load commit");
+    wv.removeEventListener("loadcommit", loadCommit);
+    const oldUa = wv.getUserAgent();
+    const ua = `${oldUa} wechatdevtools/${global.appVersion || "?"}`;
+    wv.setUserAgentOverride(ua);
+    console.log("set user agent", ua);
+    wv.src = href;
+    wv.style.opacity = 0;
+    wv.addEventListener('loadcommit', loadCommitB);
+  };
+  if (theme === 'dark') {
+    const code = `
+      var html = document.querySelector('html')
+      html.classList.add('dark')
+    `
+    wv.addContentScripts([
+      {
+        name: 'all',
+        matches: ['https://developers.weixin.qq.com/*'],
+        js: {
+          code,
+        }
+      }
+    ])
+  }
+  wv.addEventListener("loadcommit", loadCommit);
+  wv.classList.add("webview");
+  container.appendChild(wv);
+
+  global.shareData.updateConfig.changeTheme = (newTheme) => {
+    if (newTheme === theme) {
+      return
+    }
+    theme = newTheme
+    if (newTheme === 'white') {
+      document.body.classList.remove('dark')
+      wv.executeScript({
+        code: `var html = document.querySelector('html');html.classList.remove('dark')`,
+      })
+    } else {
+      document.body.classList.add('dark')
+      wv.executeScript({
+        code: `var html = document.querySelector('html');html.classList.add('dark')`,
+      })
+    }
+  }
+
+  const MaxTry = 100;
+  let i = 0;
+  const delay = (ms) => new Promise((r) => setTimeout(r, ms));
+  (async function reloadWebView() {
+    while (i++ < MaxTry) {
+      await delay(100);
+      if (
+        typeof wv.reload === "function" &&
+        typeof wv.getUserAgent === "function"
+      ) {
+        // until now, we can safely set the href link
+        await delay(0);
+        wv.src = "about:blank#";
+        break;
+      }
+    }
+    console.log("reload webview after", i, "tries.");
+  })();
+
+  function setupWindowFrame() {
+    if (this.customFrame) return
+    const _document = document
+    const customFrame = _document.createElement('header')
+    const titleBarHandler = _document.createElement('div')
+    titleBarHandler.setAttribute('class', isMac ? 'title-bar-ext is-mac' : 'title-bar-ext is-win')
+
+    const closeBtn = _document.createElement('a')
+    const closeBtnIcon = _document.createElement('i')
+    closeBtn.appendChild(closeBtnIcon)
+    const minimizeBtn = _document.createElement('a')
+    const minimizeBtnIcon = _document.createElement('i')
+    minimizeBtn.appendChild(minimizeBtnIcon)
+    const customFrameTitle = document.createElement('span')
+    
+    if (isMac) {
+      titleBarHandler.appendChild(closeBtn)
+      titleBarHandler.appendChild(minimizeBtn)
+    } else {
+      titleBarHandler.appendChild(minimizeBtn)
+      titleBarHandler.appendChild(closeBtn)
+    }
+
+    customFrame.setAttribute('id', 'custom-frame')
+    closeBtn.setAttribute('class', isMac ? 'title-bar-close --no-drag --cursor-pointer' : 'custom-frame-close --no-drag --cursor-pointer')
+    closeBtnIcon.setAttribute('class', isMac ? 'ui-icon-circle' : 'uiv2-icon-close')
+    minimizeBtn.setAttribute('class', isMac ? 'title-bar-minimize --no-drag --cursor-pointer': '--no-drag --cursor-pointer')
+    minimizeBtnIcon.setAttribute('class', isMac ? 'ui-icon-circle' : 'uiv2-icon-minimize')
+    customFrameTitle.setAttribute('class', 'custom-frame-title')
+
+    customFrame.setAttribute('class', 'whatsnew')
+
+    customFrameTitle.innerHTML = global.shareData.updateConfig.title || ''
+    closeBtn.addEventListener('click', () => {
+      const win = global.windowMap.get('WHATSNEW')
+      if (win) {
+        win.close()
+      }
+    }, false)
+    minimizeBtn.addEventListener('click', () => {
+      const win = global.windowMap.get('WHATSNEW')
+      if (win) {
+        win.minimize()
+      }
+    }, false)
+
+    if (!isMac) {
+      closeBtn.style.width = '12px'
+      closeBtn.style.height = '12px'
+      closeBtn.style.marginRight = '5px'
+    }
+    // closeBtn.innerHTML = '<svg x="0px" y="0px" width="10px" height="10px" viewBox="0 0 20 20"><polygon fill="#4d0000" points="15.9,5.2 14.8,4.1 10,8.9 5.2,4.1 4.1,5.2 8.9,10 4.1,14.8 5.2,15.9 10,11.1 14.8,15.9 15.9,14.8 11.1,10 "></polygon></svg>'
+
+    customFrame.appendChild(titleBarHandler)
+    customFrame.appendChild(customFrameTitle)
+
+    this.customFrame = customFrame
+
+    _document.body.insertBefore(customFrame, _document.body.firstChild)
+
+    if (!isMac) {
+      document.body.classList.add('windows')
+    }
+    console.log(customFrame)
+  }
+  setupWindowFrame()</script></html>

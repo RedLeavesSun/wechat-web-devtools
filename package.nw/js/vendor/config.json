@@ -1,0 +1,26 @@
+{
+	"includedLibs": {
+		"2.17.0": {
+			"version": "2.17.0",
+			"numberVersion": 537,
+			"md5": "QMFTAtHd+jPp9iSFrRhiJIdClssOGuzupy/tgM4x4A8TfilBRrKfXyAnZaXIbhP8TT1TgFlb0nuL3p1/KpAcLHsk38tiWXvcNWWH0g6C2VwCakoEh/b95mA767vKp71ypy03+M/p+dsJNFmRFtqQr0gh1GljBQDRQKuOMYUe/7o=",
+			"url": "https://res.servicewechat.com/weapp/public/commlib/537.wxapkg"
+		},
+		"feat-beefball": {
+			"version": "feat-beefball",
+			"numberVersion": 999,
+			"md5": false,
+			"url": "https://res.servicewechat.com/weapp/public/commlib/124.wxapkg"
+		}
+	},
+	"configVersion": 1637737785316,
+	"libs": {
+		"alpha": {
+			"WACloud.js": "7474030abe72b5924617dc6b878fe4c2"
+		}
+	},
+	"wcc": "710a5218ea5c413debddefcb0544f0fc",
+	"wcsc": "17c5150b815a54c062048f4507c8050d",
+	"wcc.exe": "dbb9ed8bdee6654460dafc618f9622f3",
+	"wcsc.exe": "3999c590c57c764b152bc6db3b3288c4"
+}
